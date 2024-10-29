@@ -1,4 +1,4 @@
-import { sample } from "./sample";
+import { sheetExistChecker } from "./sheetExistChecker";
 
 // GASから参照したい変数はglobalオブジェクトに渡してあげる必要がある
-(global as any).sample = sample;
+(global as any).sheetExistChecker = sheetExistChecker;
