@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "build": "node esbuild.js",
     "push": "clasp push",
     "open": "clasp open",
@@ -16,10 +16,15 @@
   "license": "ISC",
   "devDependencies": {
     "@google/clasp": "^2.4.2",
+    "@jest/globals": "^29.7.0",
     "@types/google-apps-script": "^1.0.84",
+    "@types/jest": "^29.5.14",
     "clasp": "^1.0.0",
     "esbuild": "^0.24.0",
     "esbuild-gas-plugin": "^0.8.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
     "typescript": "^5.6.3"
   }
 }
