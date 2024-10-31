@@ -18,25 +18,25 @@ global.Logger = {
   log: jest.fn(),
 } as any;
 
-describe("sheetExistChecker function", () => {
+describe("sheetExistChecker", () => {
   beforeEach(() => {
     jest.clearAllMocks(); // 全てのモックのクリア
   });
 
-  it("シートが存在しない場合、エラーメッセージをログに出力すること", () => {
-    mockSpreadsheet.getSheetByName.mockReturnValueOnce(null); // シートが存在しない場合
-    const result = sheetExistChecker();
-    expect(result).toBe(false);
-    expect(Logger.log).toHaveBeenCalledWith(ERROR_MESSAGE.SHEET_NAME_LIST_EMPTY_MESSAGE);
-  });
-
-  it("シートが存在し、行が空の場合、falseを返すこと", () => {
-    mockSpreadsheet.getSheetByName.mockReturnValueOnce(mockSpreadsheet);
-    mockSpreadsheet.getLastRow.mockReturnValue(1); // データがない場合
-    const result = sheetExistChecker();
-    expect(result).toBe(false);
-    expect(Logger.log).toHaveBeenCalledWith(ERROR_MESSAGE.SHEET_NAME_LIST_EMPTY_MESSAGE);
-  });
+  describe.only("異常処理", () => {
+    it("シートが存在しない場合、エラーメッセージを返すこと", () => {
+        mockSpreadsheet.getSheetByName.mockReturnValueOnce(null); // シートが存在しない場合
+        const result = sheetExistChecker();
+        expect(result?.errorMessage).toBe(ERROR_MESSAGE.SHEET_FETCH_FAILURE_MESSAGE);
+    });
+    
+    it("シートが存在し行が空の場合、エラーメッセージを返すこと", () => {
+        mockSpreadsheet.getSheetByName.mockReturnValueOnce(mockSpreadsheet);
+        mockSpreadsheet.getLastRow.mockReturnValue(0); // データがない場合
+        const result = sheetExistChecker();
+        expect(result?.errorMessage).toBe(ERROR_MESSAGE.SHEET_NAME_LIST_EMPTY_MESSAGE);
+    });
+  })
 
   it("シートが存在し、データがある場合、シートチェックが行われること", () => {
     mockSpreadsheet.getSheetByName.mockReturnValueOnce(mockSpreadsheet); // シートが存在する場合

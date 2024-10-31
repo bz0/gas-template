@@ -6,6 +6,10 @@ type Args = {
   checkLineNum: number
 }
 
+type ErrorResult = {
+  errorMessage: string
+}
+
 export let existsCheckerSheet:GoogleAppsScript.Spreadsheet.Sheet | null = null;
 export function sheetExistChecker () {
   try {
@@ -14,14 +18,13 @@ export function sheetExistChecker () {
 
     existsCheckerSheet = spreadSheet.getSheetByName(CONSTANTS.SHEET_NAME);
     if (!existsCheckerSheet) {
-      return false;
+      throw new Error(ERROR_MESSAGE.SHEET_FETCH_FAILURE_MESSAGE);
     }
 
     const lastRowNum:number = existsCheckerSheet.getLastRow() - 1;
     if (lastRowNum === -1) {
       // データが存在しないとき
-      Logger.log(ERROR_MESSAGE.SHEET_NAME_LIST_EMPTY_MESSAGE);
-      return false;
+      throw new Error(ERROR_MESSAGE.SHEET_NAME_LIST_EMPTY_MESSAGE);
     }
 
     Logger.log("lastRowNum:" + lastRowNum);
@@ -36,8 +39,7 @@ export function sheetExistChecker () {
     Logger.log(sheetNameList);
 
     if (sheetNameList.length === 0) {
-      Logger.log(ERROR_MESSAGE.SHEET_NAME_FETCH_FAILURE_MESSAGE);
-      return false;
+      throw new Error(ERROR_MESSAGE.SHEET_NAME_FETCH_FAILURE_MESSAGE);
     }
 
     for (const [i, [sheetName]] of sheetNameList.entries()) {
@@ -60,6 +62,8 @@ export function sheetExistChecker () {
     if (e instanceof Error) {
       console.warn(e.stack);
       console.warn("エラー発生");
+      const result : ErrorResult = { errorMessage : e.message };
+      return result;
     }
   }
 }
