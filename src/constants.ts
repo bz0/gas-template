@@ -8,5 +8,6 @@ export const CONSTANTS = {
 } as const satisfies Record<string, string | number>
 
 export const ERROR_MESSAGE = {
-    SHEET_NAME_LIST_EMPTY_MESSAGE : "シート名が1つも入力されてない為処理終了"
+    SHEET_NAME_LIST_EMPTY_MESSAGE : "シート名が入力されてない為処理終了",
+    SHEET_NAME_FETCH_FAILURE_MESSAGE : "チェック対象のシート名が取得できませんでした"
 } as const satisfies Record<string, string>
