@@ -19,8 +19,10 @@ type Result = {
 
 type sheetNameList = string[][];
 
+type spreadSheet = GoogleAppsScript.Spreadsheet.Spreadsheet | null;
+
 export let existsCheckerSheet:GoogleAppsScript.Spreadsheet.Sheet | null = null;
-export let spreadSheet:GoogleAppsScript.Spreadsheet.Spreadsheet | null = null;
+export let spreadSheet:spreadSheet = null;
 
 /**
  * シート存在チェッカー
@@ -92,6 +94,14 @@ export function getExistingSheetNameList (sheetNameList: sheetNameList): Result 
     sheetNameList: sheetNameList,
     existingSheetNameList: existingSheetNameList
   }
+}
+
+/**
+ * スプレッドシートオブジェクトに値をセットする
+ * @param sheet 
+ */
+export function setSpreadSheetObj(sheet:spreadSheet): void {
+  spreadSheet = sheet;
 }
 
 /**

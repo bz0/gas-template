@@ -1,5 +1,5 @@
 // sheetChecker.test.ts
-import { sheetExistChecker, getSheetNameList, getExistingSheetNameList, getSpreadSheet } from "./sheetExistChecker";
+import { sheetExistChecker, getSheetNameList, getExistingSheetNameList, getSpreadSheet, setSpreadSheetObj } from "./sheetExistChecker";
 import { CONSTANTS, ERROR_MESSAGE } from "./constants";
 
 /**
@@ -27,8 +27,6 @@ global.SpreadsheetApp = {
 global.Logger = {
   log: jest.fn(),
 } as any;
-
-global.spreadSheet = null;
 
 describe("sheetExistChecker関数", () => {
     beforeEach(() => {
@@ -134,12 +132,11 @@ describe("getExistingSheetNameList関数", () => {
     describe("異常処理", () => {
         it("シートが存在しない場合、エラーメッセージを返すこと", () => {
             function test () {
-                global.SpreadsheetApp.getActive = jest.fn().mockReturnValue(null);
+                setSpreadSheetObj(null);
+                getExistingSheetNameList([["Sheet1"], ["Sheet2"], ["Sheet3"]]);
             }
 
-            const result = getExistingSheetNameList([["Sheet1"], ["Sheet2"], ["Sheet3"]]);
             expect(test).toThrow(new Error('シートの取得に失敗しました'));
-            global.SpreadsheetApp.getActive = jest.fn().mockReturnValue(mockSpreadsheet);
         });
     })
 })
