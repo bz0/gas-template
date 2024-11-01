@@ -13,7 +13,7 @@ jobs:
       - name: Install Dependencies
         run: npm install
       - name: Run Test
-        run: npm run test:coverage
+        run: npx jest --coverage
       - name: Upload Coverage
         uses: codecov/codecov-action@v1
         with:
