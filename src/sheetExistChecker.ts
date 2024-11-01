@@ -13,28 +13,25 @@ type ErrorResult = {
 type existingSheetNameList = string[];
 
 type Result = {
-  sheetNameList?: string[][],
-  existingSheetNameList?: existingSheetNameList
-}
+  sheetNameList: string[][],
+  existingSheetNameList: existingSheetNameList
+} | ErrorResult
 
 type sheetNameList = string[][];
-
 type spreadSheet = GoogleAppsScript.Spreadsheet.Spreadsheet | null;
-
 export let existsCheckerSheet:GoogleAppsScript.Spreadsheet.Sheet | null = null;
-export let spreadSheet:spreadSheet = null;
 
 /**
  * シート存在チェッカー
  */
 export function sheetExistChecker () {
-  let result: ErrorResult | Result | null = null;
+  let result: Result | null = null;
   let sheetNameList: string[][];
 
   try {
-    getSpreadSheet();
-    sheetNameList = getSheetNameList();
-    result        = getExistingSheetNameList(sheetNameList);
+    const spreadSheet:spreadSheet = getSpreadSheet();
+    sheetNameList = getSheetNameList(spreadSheet);
+    result        = getExistingSheetNameList(spreadSheet, sheetNameList);
   } catch (e: unknown) {
     if (e instanceof Error) {
       console.warn(e.stack);
@@ -50,7 +47,7 @@ export function sheetExistChecker () {
  * スプレッドシートオブジェクトを取得
  */
 export function getSpreadSheet () {
-  spreadSheet = SpreadsheetApp.getActive();
+  const spreadSheet:spreadSheet = SpreadsheetApp.getActive();
   if (!spreadSheet) {
     throw new Error(ERROR_MESSAGE.SHEET_FETCH_FAILURE_MESSAGE); // テスト済み
   }
@@ -60,10 +57,11 @@ export function getSpreadSheet () {
 
 /**
  * 存在するシート名リストを取得する
- * @param sheetNameList 
+ * @param spreadSheet
+ * @param sheetNameList
  * @returns 
  */
-export function getExistingSheetNameList (sheetNameList: sheetNameList): Result {
+export function getExistingSheetNameList (spreadSheet: spreadSheet, sheetNameList: sheetNameList): Result {
   let existingSheetNameList:existingSheetNameList = [];
   if (!spreadSheet) {
     throw new Error(ERROR_MESSAGE.SHEET_FETCH_FAILURE_MESSAGE);
@@ -97,19 +95,11 @@ export function getExistingSheetNameList (sheetNameList: sheetNameList): Result 
 }
 
 /**
- * スプレッドシートオブジェクトに値をセットする
- * @param sheet 
- */
-export function setSpreadSheetObj(sheet:spreadSheet): void {
-  spreadSheet = sheet;
-}
-
-/**
  * シート名リストを取得する
  * @param spreadSheet スプレッドシートオブジェクト
  * @returns sheetNameList シート名リスト
  */
-export function getSheetNameList ():sheetNameList {
+export function getSheetNameList (spreadSheet: spreadSheet):sheetNameList {
   let sheetNameList: string[][];
 
   if (!spreadSheet) {

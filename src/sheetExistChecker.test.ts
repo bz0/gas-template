@@ -1,5 +1,5 @@
 // sheetChecker.test.ts
-import { sheetExistChecker, getSheetNameList, getExistingSheetNameList, getSpreadSheet, setSpreadSheetObj } from "./sheetExistChecker";
+import { sheetExistChecker, getSheetNameList, getExistingSheetNameList, getSpreadSheet } from "./sheetExistChecker";
 import { CONSTANTS, ERROR_MESSAGE } from "./constants";
 
 /**
@@ -86,7 +86,8 @@ describe("getSheetNameList関数", () => {
             mockSpreadsheet.getSheetByName.mockReturnValueOnce(mockSpreadsheet);
             mockSpreadsheet.getLastRow.mockReturnValue(3);
             mockSpreadsheet.getValues.mockReturnValue([["Sheet1"], ["Sheet2"], ["Sheet3"]]);
-            const result = getSheetNameList();
+            const spreadSheet = getSpreadSheet();
+            const result = getSheetNameList(spreadSheet);
             expect(result).toStrictEqual([["Sheet1"], ["Sheet2"], ["Sheet3"]]);
         });
     })
@@ -95,7 +96,8 @@ describe("getSheetNameList関数", () => {
         it("シート取得に失敗した場合、エラーメッセージを返すこと", () => {
             function test() {
                 mockSpreadsheet.getSheetByName.mockReturnValueOnce(null); // シートが存在しない場合
-                getSheetNameList();
+                const spreadSheet = getSpreadSheet();
+                getSheetNameList(spreadSheet);
             }
             expect(test).toThrow(new Error('シートの取得に失敗しました'));
         });
@@ -104,7 +106,8 @@ describe("getSheetNameList関数", () => {
             function test() {
                 mockSpreadsheet.getSheetByName.mockReturnValueOnce(mockSpreadsheet);
                 mockSpreadsheet.getLastRow.mockReturnValue(0); // データがない場合
-                getSheetNameList();
+                const spreadSheet = getSpreadSheet();
+                getSheetNameList(spreadSheet);
             }
             expect(test).toThrow(new Error('シート名が入力されてない為処理終了'));
         });
@@ -114,7 +117,6 @@ describe("getSheetNameList関数", () => {
 describe("getExistingSheetNameList関数", () => {
     beforeEach(() => {
         jest.clearAllMocks(); // 全てのモックのクリア
-        getSpreadSheet();
     });
 
     describe("正常処理", () => {
@@ -124,16 +126,17 @@ describe("getExistingSheetNameList関数", () => {
                 return mockSpreadsheet; // 他のシートは存在する
             });
 
-            const result = getExistingSheetNameList([["Sheet1"], ["Sheet2"], ["Sheet3"]]);
-            expect(result.existingSheetNameList).toStrictEqual(["Sheet2", "Sheet3"]);
+            const spreadSheet = getSpreadSheet();
+            const result = getExistingSheetNameList(spreadSheet, [["Sheet1"], ["Sheet2"], ["Sheet3"]]);
+            console.warn(result);
+            expect(result).toStrictEqual({"existingSheetNameList": ["Sheet2", "Sheet3"], "sheetNameList": [["Sheet1"], ["Sheet2"], ["Sheet3"]]});
         });
     })
 
     describe("異常処理", () => {
         it("シートが存在しない場合、エラーメッセージを返すこと", () => {
             function test () {
-                setSpreadSheetObj(null);
-                getExistingSheetNameList([["Sheet1"], ["Sheet2"], ["Sheet3"]]);
+                getExistingSheetNameList(null, [["Sheet1"], ["Sheet2"], ["Sheet3"]]);
             }
 
             expect(test).toThrow(new Error('シートの取得に失敗しました'));
