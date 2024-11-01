@@ -22,18 +22,17 @@ type sheetNameList = string[][];
 export let existsCheckerSheet:GoogleAppsScript.Spreadsheet.Sheet | null = null;
 export let spreadSheet:GoogleAppsScript.Spreadsheet.Spreadsheet | null = null;
 
+/**
+ * シート存在チェッカー
+ */
 export function sheetExistChecker () {
   let result: ErrorResult | Result | null = null;
   let sheetNameList: string[][];
 
   try {
-    // スプレッドシートオブジェクトを取得
-    spreadSheet = SpreadsheetApp.getActive();
-    if (!spreadSheet) {
-      throw new Error(ERROR_MESSAGE.SHEET_FETCH_FAILURE_MESSAGE);
-    }
-    sheetNameList = getSheetNameList(spreadSheet);
-    result = getExistingSheetNameList(sheetNameList);
+    getSpreadSheet();
+    sheetNameList = getSheetNameList();
+    result        = getExistingSheetNameList(sheetNameList);
   } catch (e: unknown) {
     if (e instanceof Error) {
       console.warn(e.stack);
@@ -43,6 +42,18 @@ export function sheetExistChecker () {
   }
 
   return result;
+}
+
+/**
+ * スプレッドシートオブジェクトを取得
+ */
+export function getSpreadSheet () {
+  spreadSheet = SpreadsheetApp.getActive();
+  if (!spreadSheet) {
+    throw new Error(ERROR_MESSAGE.SHEET_FETCH_FAILURE_MESSAGE); // テスト済み
+  }
+
+  return spreadSheet;
 }
 
 /**
@@ -88,7 +99,7 @@ export function getExistingSheetNameList (sheetNameList: sheetNameList): Result 
  * @param spreadSheet スプレッドシートオブジェクト
  * @returns sheetNameList シート名リスト
  */
-export function getSheetNameList (spreadSheet:GoogleAppsScript.Spreadsheet.Spreadsheet):sheetNameList {
+export function getSheetNameList ():sheetNameList {
   let sheetNameList: string[][];
 
   if (!spreadSheet) {
