@@ -1,6 +1,5 @@
 // sheetChecker.test.ts
 import { sheetExistChecker, getSheetNameList, getExistingSheetNameList, getSpreadSheet } from "./sheetExistChecker";
-import { CONSTANTS, ERROR_MESSAGE } from "./constants";
 
 /**
  * - 前提：GAS独自のオブジェクトやメソッドはモックオブジェクトで代用
